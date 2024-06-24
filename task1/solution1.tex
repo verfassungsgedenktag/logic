@@ -1,0 +1,128 @@
+\input{preamble}
+
+\begin{document}
+    \section*{Домашнее задание №1, Марченко М.}
+
+    \begin{problem}[1]
+        Запишите аксиомы теории групп предложениями следующих сигнатур: \(\{=, \cdot \}\), \(\{=, \cdot, e \}\), \(\{=, \cdot, e, ^{-1} \}\), \(\{=, P \}\), где \(P\) --- трёхместный предикатный символ, обозначающий график умножения. Какая их этих сигнатур лучше соответствует изложению теории групп? Сделайте синтаксический анализ полученных формул.
+    \end{problem}
+    \begin{proof}[Решение]
+        \begin{itemize}
+            \item \(\{=, \cdot \}\):
+            \begin{enumerate}
+                \item \(\forall a \ \forall b \ \forall c \enskip (a \cdot b) \cdot c = a \cdot (b \cdot c)\),
+                \item \(\exists e \ \forall a \enskip e \cdot a = a \land a \cdot e = a\),
+                \item \(\forall a_1 \ \exists a_2 \ \forall b \enskip (a_1 \cdot a_2) \cdot b = b \land (a_2 \cdot a_1) \cdot b = b \land b \cdot (a_1 \cdot a_2) = b \land b \cdot (a_2 \cdot a_1) = b\).
+            \end{enumerate}
+            \item \(\{=, \cdot, e\}\):
+            \begin{enumerate}
+                \item \(\forall a \ \forall b \ \forall c \enskip (a \cdot b) \cdot c = a \cdot (b \cdot c)\),
+                \item \(\forall a \enskip e \cdot a = a \land a \cdot e = a\),
+                \item \(\forall a_1 \ \exists a_2 \enskip a_1 \cdot a_2 = e \land a_2 \cdot a_1 = e\).
+            \end{enumerate}
+            \item \(\{=, \cdot, e, ^{-1}\}\):
+            \begin{enumerate}
+                \item \(\forall a \ \forall b \ \forall c \enskip (a \cdot b) \cdot c = a \cdot (b \cdot c)\),
+                \item \(\forall a \enskip e \cdot a = a \land a \cdot e = a\),
+                \item \(\forall a_1 \ \exists a_2 \enskip a_2 = a_1^{-1}\).
+            \end{enumerate}
+            \item \(\{=, P\}\) (пусть \(\bG\) --- \(\sigma\)-структура, где \(\sigma = \{=, P\}\)):
+            \begin{enumerate}
+                \item \(\forall a \ \forall b \ \forall c \enskip \bG \models \predicate(a \cdot b, c, a \cdot (b \cdot c))\),
+                \item \(\exists e \ \forall a \enskip \bG \models \predicate(e, a, a) \land \bG \models \predicate(a, e, a)\),
+                \item \(\forall a_1 \ \exists a_2 \ \forall b \enskip \bG \models \predicate(a_1 \cdot a_2, b, b) \land \bG \models \predicate(a_2 \cdot a_1, b, b) \land \bG \models \predicate(b, a_1 \cdot a_2, b) \land \bG \models \predicate(b, a_2 \cdot a_1, b)\).
+            \end{enumerate}
+        \end{itemize}
+        \qed
+
+        Для изложения теории групп лучше всего подходит сигнатура \(\{=, \cdot, e, ^{-1}\}\), так как содержит ключевые для неё понятия нейтрального и обратного элементов. \qed
+
+        TODO
+    \end{proof}
+
+    \begin{problem}[2]
+        Докажите основные равносильности. Докажите, что любую формулу можно привести к предварённому виду, в котором бескванторная часть является ДНФ бескванторных формул.
+    \end{problem}
+    \begin{proof}[Решение]
+        Основные равносильности легко доказать, построив таблицы истинности для формул слева и справа от \(\equiv\) и убедившись, что они одинаковые. \qed
+
+        Используя равносильности для кванторов, последние можно <<протащить>> в начало формулы, после чего с помощью первых десяти равносильностей привести бескванторную часть формулы к ДНФ. 
+    \end{proof}
+
+    \begin{problem}[3]
+        Существует ли алгоритм, вычисляющий значение \(\varphi^\bA\) по любой конечной сигнатуре \(\sigma\), \(\sigma\)-предложению \(\varphi\) и конечной \(\sigma\)-структуре \(\bA\). Если да, оцените время работы вашего алгоритма.
+    \end{problem}
+    \begin{proof}[Решение]
+        Ниже приведён псевдокод алгоритма:
+        \begin{algorithmic}[1]
+            \Function{evaluate}{\(\varphi\), \(\bA\)}
+                \If{\(\varphi = \predicate(t_1, \ldots, t_n)\)}
+                \Comment{если \(\varphi\) --- атомарная, вычислить значения термов и \(\varphi\)}
+                    \State \Return \(\predicate(t_1, \ldots, t_n)\) 
+                \EndIf
+                \item[]
+                
+                \LComment{если \(\varphi\) содержит логические связки, её значение вычисляется рекурсивно}
+                \If{\(\varphi = \lnot \psi\)}
+                    \State \Return \(\lnot\)\Call{evaluate}{\(\psi\), \(\bA\)}
+                \EndIf
+                \If{\(\varphi = \psi_1 \land \psi_2\)}
+                    \State \Return \Call{evaluate}{\(\psi_1\), \(\bA\)} \(\land\) \Call{evaluate}{\(\psi_2\), \(\bA\)}
+                \EndIf
+                \If{\(\varphi = \psi_1 \lor \psi_2\)}
+                    \State \Return \Call{evaluate}{\(\psi_1\), \(\bA\)} \(\lor\) \Call{evaluate}{\(\psi_2\), \(\bA\)}
+                \EndIf
+                \If{\(\varphi = \psi_1 \to \psi_2\)}
+                    \State \Return \(\lnot\) \Call{evaluate}{\(\psi_1\), \(\bA\)} \(\lor\) \Call{evaluate}{\(\psi_2\), \(\bA\)}
+                \EndIf
+                \item[]
+
+                \LComment{если \(\varphi\) содержит кванторы, перебираем все \(|\sigma|\) возможных значений переменных}
+                \If{\(\varphi = \forall x \ \psi\)}
+                    \ForAll{\(a \in \bA\)}
+                        \If{\(\lnot\)\Call{evaluate}{\(\psi(a)\), \(\bA\)}}
+                            \State \Return Л
+                        \EndIf
+                    \EndFor
+                    \State \Return И
+                \EndIf
+                \If{\(\varphi = \exists x \ \psi\)}
+                    \ForAll{\(a \in \bA\)}
+                        \If{\Call{evaluate}{\(\psi(a)\), \(\bA\)}}
+                            \State \Return И
+                        \EndIf
+                    \EndFor
+                    \State \Return Л
+                \EndIf
+            \EndFunction
+        \end{algorithmic}
+
+        Если \(n\) --- количество переменных в \(\varphi\), а \(|\varphi|\) --- длина формулы \(\varphi\), то время работы алгоритма можно оценить как \(O(|\varphi| \cdot |\sigma|^n)\).
+    \end{proof}
+
+    \begin{problem}[4]
+        Докажите, что отношение \(\leqslant\) не определимо в структуре \((\bZ, =, +)\), а операция \(+\) не определима в структуре \((\bZ, =, \leqslant)\).
+    \end{problem}
+    \begin{proof}[Решение]
+        Пусть \(g \colon x \mapsto -x\), тогда \(g\) --- автоморфизм. Так как \(a \leqslant b \centernot\implies -a \leqslant -b\), то отношение~\(\leqslant\) не инвариантно, а следовательно, не определимо. \qed
+
+        Функция определима тогда и только тогда, когда определим её график. Но с помощью \(=\) и \(\leqslant\) мы можем определять только вертикальные и горизонтальные прямые, а также участки плоскости, ограниченные этими прямыми, в то время, как график \(+\) --- наклонная прямая.
+    \end{proof}
+
+    \begin{problem}[5]
+        Напишите предложения сигнатуры \(\{=, \leqslant\}\) такие, что любая модель получившегося множества предложений является плотным линейным порядком с наименьшим, но без наибольшего элемента. Докажите, что любые две счётные модели этого множества изоморфны. Верно ли это для моделей мощности континуум?
+    \end{problem}
+    \begin{proof}[Решение]
+        Просто составим требуемое множество из определения плотного линейного порядка с наименьшим, но без наибольшего элемента:
+        \begin{itemize}
+            \item \(\forall x \ \forall y \enskip x \neq y \to (x \leqslant y \lor y \leqslant x)\),
+            \item \(\forall x \ \forall y \enskip x \leqslant y \to (\exists z \enskip x \leqslant z \leqslant y)\),
+            \item \(\exists m \ \forall x \enskip m \leqslant x\),
+            \item \(\forall x \ \exists y \enskip x \leqslant y\). \qed
+        \end{itemize}
+        
+        Рекурсивно построим изоморфизм \(\varphi\) между произвольной моделью этого множества и структурой \((\bQ_+, =, \leqslant)\). Пусть \(\varphi(m) = 0\); если мы нашли образы для элементов \(\{a_i\}_{i=0}^k\) (пусть этот список отсортирован по возрастанию), то образ элемента \(a_{k+1}\) найдём следующим образом: если \(a_k \leqslant a_{k+1}\), то выберем произвольное рациональное число, большее \(\varphi(a_k)\) в качестве образа \(a_{k+1}\). В противном случае найдём в списке рассмотренных такие числа, что \(a_i \leqslant a_{k+1} \leqslant a_{i+1}\) и выберем произвольное рациональное число между \(\varphi(a_i)\) и \(\varphi(a_{i+1})\) в качестве образа \(a_{k+1}\). \qed
+
+        TODO
+    \end{proof}
+\end{document}
