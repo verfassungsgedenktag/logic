@@ -37,7 +37,20 @@
 
         Для изложения теории групп лучше всего подходит сигнатура \(\{=, \cdot, e, ^{-1}\}\), так как содержит ключевые для неё понятия нейтрального и обратного элементов. \qed
 
-        TODO
+        Синтаксический анализ аксиом теории групп, записанных в сигнатуре \(\{=, \cdot, e, ^{-1}\}\):
+        \begin{enumerate}
+            \item Термы: \(a\), \(b\), \(c\), \(a \cdot b\), \((a \cdot b) \cdot c\), \(b \cdot c\), \(a \cdot (b \cdot c)\).
+            
+            Подформулы: \((a \cdot b) \cdot c = a \cdot (b \cdot c)\), \(\forall c \enskip (a \cdot b) \cdot c = a \cdot (b \cdot c)\), \(\forall b \ \forall c \enskip (a \cdot b) \cdot c = a \cdot (b \cdot c)\), \(\forall a \ \forall b \ \forall c \enskip (a \cdot b) \cdot c = a \cdot (b \cdot c)\).
+
+            \item Термы: \(a\), \(e\), \(e \cdot a\), \(a \cdot e\).
+
+            Подформулы: \(e \cdot a = a\), \(a \cdot e = a\), \(e \cdot a = a \land a \cdot e = a\), \(\forall a \enskip e \cdot a = a \land a \cdot e = a\).
+
+            \item Термы: \(a_1\), \(a_2\), \(a_1^{-1}\).
+            
+            Подформулы: \(a_2 = a_1^{-1}\), \(\exists a_2 \enskip a_2 = a_1^{-1}\), \(\forall a_1 \ \exists a_2 \enskip a_2 = a_1^{-1}\).
+        \end{enumerate}
     \end{proof}
 
     \begin{problem}[2]
